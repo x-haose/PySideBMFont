@@ -6,12 +6,7 @@ from PySide6.QtWidgets import QAbstractButton
 from qfluentwidgets import MessageBox
 
 
-def add_btn_click_event(
-        btn: QAbstractButton,
-        func: Callable,
-        click_text: str = "",
-        *args, **kwargs
-):
+def add_btn_click_event(btn: QAbstractButton, func: Callable, click_text: str = "", *args, **kwargs):
     """
     给按钮添加点击事件
     Args:
@@ -41,18 +36,18 @@ def add_btn_click_event(
         btn.setDisabled(False)
         btn.setText(btn_text)
 
-    getattr(btn, "clicked").connect(_cb)
+    btn.clicked.connect(_cb)
 
 
 def show_message_box(
-        parent,
-        title: str,
-        content: str = "",
-        yes_cb: Callable = None,
-        hide_yes_btn: bool = False,
-        hide_cancel_btn: bool = False,
-        yes_text: str = None,
-        cancel_text: str = None,
+    parent,
+    title: str,
+    content: str = "",
+    yes_cb: Callable = None,
+    hide_yes_btn: bool = False,
+    hide_cancel_btn: bool = False,
+    yes_text: str = None,
+    cancel_text: str = None,
 ):
     mb = MessageBox(title, content, parent)
     hide_cancel_btn and mb.cancelButton.hide()

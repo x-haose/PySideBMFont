@@ -1,14 +1,28 @@
 from pathlib import Path
 
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QDragEnterEvent, QDropEvent, QPixmap, QColor, QKeyEvent, QIcon
-from PySide6.QtWidgets import QWidget, QHBoxLayout, QHeaderView, QTableWidgetItem, QLabel, QVBoxLayout, QFileDialog, \
-    QApplication
-from qfluentwidgets import SubtitleLabel, setFont, TableWidget, PrimaryPushButton, FluentIcon
+from PySide6.QtGui import QColor, QDragEnterEvent, QDropEvent, QIcon, QKeyEvent, QPixmap
+from PySide6.QtWidgets import (
+    QApplication,
+    QFileDialog,
+    QHBoxLayout,
+    QHeaderView,
+    QLabel,
+    QTableWidgetItem,
+    QVBoxLayout,
+    QWidget,
+)
+from qfluentwidgets import (
+    FluentIcon,
+    PrimaryPushButton,
+    SubtitleLabel,
+    TableWidget,
+    setFont,
+)
 
 from bmfont.service import FontGenerator
-from bmfont.ui.common.utils import add_btn_click_event, show_message_box
 from bmfont.ui.common.components import FontPreviewCard, FontSaveCard
+from bmfont.ui.common.utils import add_btn_click_event, show_message_box
 
 
 class MainWindow(QWidget):
@@ -17,36 +31,28 @@ class MainWindow(QWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
-        self.setObjectName('BitMapFontUi')
+        self.setObjectName("BitMapFontUi")
 
         self.label = SubtitleLabel("点击或拖入图片进行制作", self)
         self.label.setAlignment(Qt.AlignCenter)
         self.label.setTextColor(QColor(99, 99, 99))
         setFont(self.label, 24)
 
-        self.btn_reset = PrimaryPushButton('重置', self)
+        self.btn_reset = PrimaryPushButton("重置", self)
 
         self.font_table = TableWidget(self)
         self.font_table.setWordWrap(False)
-        self.font_table.setColumnCount(4)
+        self.font_table.setColumnCount(6)
         self.font_table.verticalHeader().hide()
-        self.font_table.setHorizontalHeaderLabels(['图片', 'ID', 'X偏移', 'Y偏移'])
+        self.font_table.setHorizontalHeaderLabels(["图片", "ID", "X偏移", "Y偏移", "宽度", "高度"])
         self.font_table.resizeColumnsToContents()
         self.font_table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         self.font_table.verticalHeader().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
         self.font_table.setSortingEnabled(True)
 
-        self.prew_img = FontPreviewCard(
-            icon=FluentIcon.FONT,
-            title="预览",
-            get_font_data_func=self.get_font_data
-        )
+        self.prew_img = FontPreviewCard(icon=FluentIcon.FONT, title="预览", get_font_data_func=self.get_font_data)
 
-        self.input_btn_generate = FontSaveCard(
-            icon=FluentIcon.FONT,
-            title="字体名称",
-            btn_text="生成"
-        )
+        self.input_btn_generate = FontSaveCard(icon=FluentIcon.FONT, title="字体名称", btn_text="生成")
         self.font_opts_widget = QWidget()
         self.v_layout = QVBoxLayout(self.font_opts_widget)
         self.v_layout.addWidget(self.prew_img)
@@ -67,8 +73,8 @@ class MainWindow(QWidget):
 
     def init_window(self):
         self.resize(900, 700)
-        self.setWindowIcon(QIcon(':/qfluentwidgets/images/logo.png'))
-        self.setWindowTitle('PySideBMFont')
+        self.setWindowIcon(QIcon(":/qfluentwidgets/images/logo.png"))
+        self.setWindowTitle("PySideBMFont")
 
         desktop = QApplication.screens()[0].availableGeometry()
         width, height = desktop.width(), desktop.height()
@@ -95,7 +101,7 @@ class MainWindow(QWidget):
         Returns:
 
         """
-        images_ulrs = [url.toLocalFile() for url in event.mimeData().urls() if url.toLocalFile().endswith('png')]
+        images_ulrs = [url.toLocalFile() for url in event.mimeData().urls() if url.toLocalFile().endswith("png")]
         if not images_ulrs:
             return
 
@@ -112,12 +118,7 @@ class MainWindow(QWidget):
         """
         if not self.acceptDrops():
             return
-        images_ulrs = QFileDialog.getOpenFileNames(
-            self,
-            "选择图片",
-            "D:\\work\\arts\\slots一版切图",
-            "PNG Files(*.png);"
-        )[0]
+        images_ulrs = QFileDialog.getOpenFileNames(self, "选择图片", "D:\\work\\arts\\slots一版切图", "PNG Files(*.png);")[0]
         if not images_ulrs:
             return
 
@@ -157,32 +158,47 @@ class MainWindow(QWidget):
             self.font_dict[i] = path
             self.font_table.setRowCount(i + 1)
 
+            # 设置第一列：图片
             icon_lab = QLabel()
-            icon_lab.setPixmap(QPixmap(path))
+            icon_pixmap = QPixmap(path)
+            icon_lab.setPixmap(icon_pixmap)
             icon_lab.setAlignment(Qt.AlignHCenter)
             self.font_table.setCellWidget(i, 0, icon_lab)
 
+            # 设置第二列：图片ID
             img_name = Path(path).stem
-            item_id = img_name.split('_')[-1]
+            item_id = img_name.split("_")[-1]
             match item_id:
-                case '10':
-                    item_id = ','
-                case '11':
-                    item_id = '.'
+                case "10":
+                    item_id = ","
+                case "11":
+                    item_id = "."
             item_id = str(int(item_id)) if item_id.isdigit() else item_id
             item_id = QTableWidgetItem(item_id)
             item_id.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
             self.font_table.setItem(i, 1, QTableWidgetItem(item_id))
 
+            # 设置第三列：X偏移
             xoffset = "0"
             item_x = QTableWidgetItem(xoffset)
             item_x.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
             self.font_table.setItem(i, 2, QTableWidgetItem(item_x))
 
-            yoffset = '20' if item_id.text() in [',', '.'] else '0'
+            # 设置第四列：Y偏移
+            yoffset = "20" if item_id.text() in [",", "."] else "0"
             item_y = QTableWidgetItem(yoffset)
             item_y.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
             self.font_table.setItem(i, 3, QTableWidgetItem(item_y))
+
+            # 设置第五列：图片宽度
+            item_w = QTableWidgetItem(str(icon_pixmap.width()))
+            item_w.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+            self.font_table.setItem(i, 4, QTableWidgetItem(item_w))
+
+            # 设置第六列：图片高度
+            item_h = QTableWidgetItem(str(icon_pixmap.height()))
+            item_h.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+            self.font_table.setItem(i, 5, QTableWidgetItem(item_h))
 
     def on_click_reset(self):
         """
@@ -190,9 +206,10 @@ class MainWindow(QWidget):
         Returns:
 
         """
+        self.prew_img.setValue("")
         self.input_btn_generate.setValue("")
         self.font_table.clear()
-        self.font_table.setHorizontalHeaderLabels(['图片', 'ID', 'X偏移', 'Y偏移'])
+        self.font_table.setHorizontalHeaderLabels(["图片", "ID", "X偏移", "Y偏移", "宽度", "高度"])
         self.font_opts_widget.hide()
         self.label.show()
         self.setAcceptDrops(True)
@@ -210,14 +227,21 @@ class MainWindow(QWidget):
         """
         font_data = {}
         for row in range(self.font_table.rowCount()):
-
             image_path = self.font_dict[row]
             value = self.font_table.item(row, 1).text()
             xoffset = self.font_table.item(row, 2).text()
             yoffset = self.font_table.item(row, 3).text()
+            width = self.font_table.item(row, 4).text()
+            height = self.font_table.item(row, 5).text()
 
             if value == char:
-                font_data = {"path": image_path, "x_offset": float(xoffset), "y_offset": float(yoffset)}
+                font_data = {
+                    "path": image_path,
+                    "x_offset": float(xoffset),
+                    "y_offset": float(yoffset),
+                    "width": float(width),
+                    "height": float(height),
+                }
                 break
 
         return font_data
@@ -239,18 +263,11 @@ class MainWindow(QWidget):
             xoffset = self.font_table.item(row, 2).text()
             yoffset = self.font_table.item(row, 3).text()
 
-            character_data.append({
-                "image_path": image_path,
-                "value": value,
-                "xoffset": xoffset,
-                "yoffset": yoffset
-            })
+            character_data.append({"image_path": image_path, "value": value, "xoffset": xoffset, "yoffset": yoffset})
 
         folder = QFileDialog.getExistingDirectory(self, "选择文件夹", "D:\\work\\client-game\\assets")
         generator = FontGenerator(
-            character_data=character_data,
-            output_folder=folder,
-            name=self.input_btn_generate.value
+            character_data=character_data, output_folder=folder, name=self.input_btn_generate.value
         )
         generator.generate_font()
         show_message_box(self, "生成成功", hide_cancel_btn=True)

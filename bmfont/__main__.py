@@ -20,9 +20,7 @@ async def async_main():
 
     app = QApplication.instance()
     if hasattr(app, "aboutToQuit"):
-        getattr(app, "aboutToQuit").connect(
-            functools.partial(close_future, future)
-        )
+        app.aboutToQuit.connect(functools.partial(close_future, future))
 
     locale = QLocale(QLocale.Chinese, QLocale.China)
     translator = FluentTranslator(locale)
@@ -40,5 +38,5 @@ def main():
         sys.exit(0)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

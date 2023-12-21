@@ -1,25 +1,28 @@
-from typing import Union, Callable
+from typing import Callable, Union
 
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QIcon, QPixmap
-from PySide6.QtWidgets import QGraphicsScene, QGraphicsView, QGraphicsPixmapItem, QFrame
+from PySide6.QtWidgets import QFrame, QGraphicsPixmapItem, QGraphicsScene, QGraphicsView
 from qfluentwidgets import (
-    SettingCard, FluentIconBase, ConfigItem,
-    LineEdit, PrimaryPushButton
+    ConfigItem,
+    FluentIconBase,
+    LineEdit,
+    PrimaryPushButton,
+    SettingCard,
 )
 from qfluentwidgets.common.config import qconfig
 
 
 class InputSettingCard(SettingCard):
-    """ Setting card with switch button """
+    """Setting card with switch button"""
 
     def __init__(
-            self,
-            icon: Union[str, QIcon, FluentIconBase],
-            title: str,
-            content=None,
-            config_item: ConfigItem = None,
-            parent=None
+        self,
+        icon: Union[str, QIcon, FluentIconBase],
+        title: str,
+        content=None,
+        config_item: ConfigItem = None,
+        parent=None,
     ):
         """
         Parameters
@@ -52,7 +55,7 @@ class InputSettingCard(SettingCard):
         self.hBoxLayout.addWidget(self.input_ui, 0, Qt.AlignRight)
         self.hBoxLayout.addSpacing(16)
 
-        getattr(self.input_ui, "textChanged").connect(self.setValue)
+        self.input_ui.textChanged.connect(self.setValue)
 
     def setValue(self, text: str):
         if self.config_item:
@@ -66,15 +69,9 @@ class InputSettingCard(SettingCard):
 
 
 class FontSaveCard(InputSettingCard):
-    """ Setting card with switch button """
+    """Setting card with switch button"""
 
-    def __init__(
-            self,
-            icon: Union[str, QIcon, FluentIconBase],
-            title: str,
-            btn_text,
-            parent=None
-    ):
+    def __init__(self, icon: Union[str, QIcon, FluentIconBase], title: str, btn_text, parent=None):
         super().__init__(icon, title, "", parent)
 
         self.input_ui.setFixedWidth(300)
@@ -85,14 +82,14 @@ class FontSaveCard(InputSettingCard):
 
 
 class FontPreviewCard(SettingCard):
-    """ Setting card with switch button """
+    """Setting card with switch button"""
 
     def __init__(
-            self,
-            icon: Union[str, QIcon, FluentIconBase],
-            title: str,
-            get_font_data_func: Callable[[str], dict],
-            parent=None
+        self,
+        icon: Union[str, QIcon, FluentIconBase],
+        title: str,
+        get_font_data_func: Callable[[str], dict],
+        parent=None,
     ):
         super().__init__(icon, title, "", parent)
 
@@ -111,34 +108,38 @@ class FontPreviewCard(SettingCard):
         self.hBoxLayout.addWidget(self.input_ui, 0, Qt.AlignRight)
         self.hBoxLayout.addSpacing(16)
 
-        getattr(self.input_ui, "textChanged").connect(self.setValue)
+        self.input_ui.textChanged.connect(self.setValue)
 
     def setValue(self, value: str):
+        self.input_ui.setText(value)
         self.preview_scene = QGraphicsScene()
         self.preview_view.setScene(self.preview_scene)
 
         offset = 30  # 调整的位置偏移量，可以根据需要调整
 
-        for index, char in enumerate(value):
+        for _index, char in enumerate(value):
             img_data = self.get_font_data_func(char)
             if not img_data:
                 continue
 
-            img_path = img_data['path']
-            x_offset = img_data['x_offset']
-            y_offset = img_data['y_offset']
+            img_path = img_data["path"]
+            x_offset = img_data["x_offset"]
+            y_offset = img_data["y_offset"]
+            width = img_data["width"]
 
-            x_offset += (index + 1) * offset
+            offset += x_offset
 
             # 创建QPixmap并设置图片
             pixmap = QPixmap(img_path)
 
             # 创建QGraphicsPixmapItem并设置位置
             pixmap_item = QGraphicsPixmapItem(pixmap)
-            pixmap_item.setPos(x_offset, y_offset)
+            pixmap_item.setPos(offset, y_offset)
 
             # 添加新的图像项
             self.preview_scene.addItem(pixmap_item)
+
+            offset += width
 
         # 调整预览视图的显示范围
         items_rect = self.preview_scene.itemsBoundingRect()
