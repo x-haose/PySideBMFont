@@ -1,6 +1,7 @@
 import asyncio
 import functools
 import sys
+from asyncio import Future
 
 import qasync
 from PySide6.QtCore import QLocale
@@ -16,7 +17,7 @@ async def async_main():
         loop.call_later(10, _future.cancel)
         _future.cancel()
 
-    future = asyncio.Future()
+    future: Future = asyncio.Future()
 
     app = QApplication.instance()
     if hasattr(app, "aboutToQuit"):

@@ -26,7 +26,7 @@ from bmfont.ui.common.utils import add_btn_click_event, show_message_box
 
 
 class MainWindow(QWidget):
-    font_dict = {}
+    font_dict: dict[int, str] = {}
     images: list[str] = []
 
     def __init__(self, parent=None):
@@ -167,16 +167,16 @@ class MainWindow(QWidget):
 
             # 设置第二列：图片ID
             img_name = Path(path).stem
-            item_id = img_name.split("_")[-1]
-            match item_id:
+            data = img_name.split("_")[-1]
+            match data:
                 case "10":
-                    item_id = ","
+                    data = ","
                 case "11":
-                    item_id = "."
-            item_id = str(int(item_id)) if item_id.isdigit() else item_id
-            item_id = QTableWidgetItem(item_id)
-            item_id.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-            self.font_table.setItem(i, 1, QTableWidgetItem(item_id))
+                    data = "."
+            data = str(int(data)) if data.isdigit() else data
+            table_widget_item = QTableWidgetItem(data)
+            table_widget_item.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+            self.font_table.setItem(i, 1, QTableWidgetItem(table_widget_item))
 
             # 设置第三列：X偏移
             xoffset = "0"
@@ -185,7 +185,7 @@ class MainWindow(QWidget):
             self.font_table.setItem(i, 2, QTableWidgetItem(item_x))
 
             # 设置第四列：Y偏移
-            yoffset = "20" if item_id.text() in [",", "."] else "0"
+            yoffset = "20" if table_widget_item.text() in [",", "."] else "0"
             item_y = QTableWidgetItem(yoffset)
             item_y.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
             self.font_table.setItem(i, 3, QTableWidgetItem(item_y))

@@ -43,11 +43,11 @@ def show_message_box(
     parent,
     title: str,
     content: str = "",
-    yes_cb: Callable = None,
+    yes_cb: Callable[..., None] | None = None,
     hide_yes_btn: bool = False,
     hide_cancel_btn: bool = False,
-    yes_text: str = None,
-    cancel_text: str = None,
+    yes_text: str | None = None,
+    cancel_text: str | None = None,
 ):
     mb = MessageBox(title, content, parent)
     hide_cancel_btn and mb.cancelButton.hide()

@@ -51,10 +51,10 @@ class FontGenerator:
         # 粘贴每个字符图片到大图上，并添加fnt配置信息
         x, y = 0, 0
         for _i, char_data in enumerate(self.character_data):
-            image_path = char_data.get("image_path")
-            character_value = char_data.get("value")
-            xoffset = char_data.get("xoffset", 0)
-            yoffset = char_data.get("yoffset", 0)
+            image_path: str = char_data.get("image_path", "")
+            character_value: str = char_data.get("value", "")
+            xoffset: int = char_data.get("xoffset", 0)
+            yoffset: int = char_data.get("yoffset", 0)
             character_image = Image.open(image_path).convert("RGBA")
 
             # 获取每个字符的实际宽高
@@ -78,11 +78,13 @@ class FontGenerator:
 
         # 保存大图
         self.output_folder.mkdir(parents=True, exist_ok=True)
-        self.fnt_img_path.exists() and self.fnt_img_path.unlink()
+        if self.fnt_img_path.exists():
+            self.fnt_img_path.unlink()
         combined_image.save(str(self.fnt_img_path))
 
         # 保存fnt配置文件
-        self.fnt_cfg_path.exists() and self.fnt_cfg_path.unlink()
+        if self.fnt_cfg_path.exists():
+            self.fnt_cfg_path.unlink()
         self.fnt_cfg_path.write_text("\n".join(fnt_lines), encoding="utf8")
 
         logger.success("生成完成！")
