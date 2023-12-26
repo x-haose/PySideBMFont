@@ -68,10 +68,17 @@ class MainWindow(QWidget):
         add_btn_click_event(self.btn_reset, self.on_click_reset)
         add_btn_click_event(self.input_btn_generate.btn_ui, self.on_click_generate)
 
+        self.font_table.itemChanged.connect(self.on_item_changed)
+
         self.init_window()
         self.setAcceptDrops(True)
 
     def init_window(self):
+        """
+        初始化窗口
+        Returns:
+
+        """
         self.resize(900, 700)
         self.setWindowIcon(QIcon(":/qfluentwidgets/images/logo.png"))
         self.setWindowTitle("PySideBMFont")
@@ -126,6 +133,14 @@ class MainWindow(QWidget):
         self.input_images(images_ulrs)
 
     def keyPressEvent(self, event: QKeyEvent):
+        """
+        键盘按下事件
+        Args:
+            event: 事件
+
+        Returns:
+
+        """
         if event.key() != Qt.Key_Delete:
             return super().keyPressEvent(event)
 
@@ -168,11 +183,6 @@ class MainWindow(QWidget):
             # 设置第二列：图片ID
             img_name = Path(path).stem
             data = img_name.split("_")[-1]
-            match data:
-                case "10":
-                    data = ","
-                case "11":
-                    data = "."
             data = str(int(data)) if data.isdigit() else data
             table_widget_item = QTableWidgetItem(data)
             table_widget_item.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
@@ -185,7 +195,7 @@ class MainWindow(QWidget):
             self.font_table.setItem(i, 2, QTableWidgetItem(item_x))
 
             # 设置第四列：Y偏移
-            yoffset = "20" if table_widget_item.text() in [",", "."] else "0"
+            yoffset = "0"
             item_y = QTableWidgetItem(yoffset)
             item_y.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
             self.font_table.setItem(i, 3, QTableWidgetItem(item_y))
@@ -215,6 +225,20 @@ class MainWindow(QWidget):
         self.setAcceptDrops(True)
         self.images.clear()
         self.font_dict.clear()
+
+    def on_item_changed(self, item: QTableWidgetItem):
+        """
+        当表格中的项被更改时调用
+        """
+        # 确保只有在 Id、X偏移 或 Y偏移 更改时才重新渲染预览
+        if item.column() in (1, 2, 3):  # 1、2 和 3 分别是 ID、X偏移 和 Y偏移 的列索引
+            self.update_preview()
+
+    def update_preview(self):
+        """
+        更新预览
+        """
+        self.prew_img.setValue(self.prew_img.value)
 
     def get_font_data(self, char: str):
         """

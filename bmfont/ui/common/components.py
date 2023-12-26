@@ -110,6 +110,10 @@ class FontPreviewCard(SettingCard):
 
         self.input_ui.textChanged.connect(self.setValue)
 
+    @property
+    def value(self):
+        return self.input_ui.text()
+
     def setValue(self, value: str):
         self.input_ui.setText(value)
         self.preview_scene = QGraphicsScene()
