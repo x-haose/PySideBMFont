@@ -1,5 +1,5 @@
 [project]
-name = ""
+name = "PySideBMFont"
 version = ""
 description = ""
 authors = [
@@ -7,10 +7,12 @@ authors = [
 ]
 dependencies = [
     "qasync>=0.26.0",
-    "nuitka>=1.8.4",
     "Pillow>=10.1.0",
     "PySide6-Fluent-Widgets @ git+https://github.com/x-haose/PySide6-Fluent-Widgets.git@PySide6",
     "loguru>=0.7.2",
+    "nuitka>=1.8.4",
+    "ordered-set>=4.1.0",
+    "zstandard>=0.22.0",
 ]
 requires-python = ">=3.10,<3.13"
 readme = "README.md"
@@ -89,4 +91,4 @@ verify_ssl = true
 
 [tool.pdm.scripts]
 check = "pdm run pre-commit run --all-files"
-build = "pdm run pyside6-deploy -c pysidedeploy.spec"
+build = "nuitka --windows-disable-console --remove-output --follow-imports --onefile --enable-plugin=pyside6 --output-dir=dist --quiet --noinclude-qt-translations -o PySideBMFont ./bmfont/__main__.py"

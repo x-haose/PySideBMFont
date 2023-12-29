@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["cross_platform"]
 lock_version = "4.4"
-content_hash = "sha256:d590b1d57d6b9d283e6fb232b15ae4812484300f1e017e0365122bba2f6f13c9"
+content_hash = "sha256:33b95b0090fde92187e43983d9452f9e0fa1157c7c5aa0eb703c79538438cc72"
 
 [[package]]
 name = "cffi"
