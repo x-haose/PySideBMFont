@@ -290,6 +290,9 @@ class MainWindow(QWidget):
             character_data.append({"image_path": image_path, "value": value, "xoffset": xoffset, "yoffset": yoffset})
 
         folder = QFileDialog.getExistingDirectory(self, "选择文件夹", "D:\\work\\client-game\\assets")
+        if not folder or not Path(folder).exists():
+            return
+
         generator = FontGenerator(
             character_data=character_data, output_folder=folder, name=self.input_btn_generate.value
         )
