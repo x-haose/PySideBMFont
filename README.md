@@ -3,6 +3,10 @@
 
 基于python side6的图片字体制作工具，完成了基本的功能，使用`PySide6-Fluent-Widgets`库做的界面，还挺美观的
 
+## 截图
+![](docs/img/1.png)
+![](docs/img/2.png)
+
 
 ## 在本地运行
 
@@ -18,7 +22,7 @@ Clone 这个 project
   cd PySideBMFont
 ```
 
-安装依赖
+安装依赖。 如未按照pdm，需先行安装pdm
 
 ```bash
   pdm sync
