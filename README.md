@@ -53,4 +53,4 @@ Clone 这个 project
 - PySide6-Fluent-Widgets
 ## 致谢
 
- - [一个pyqt、pyside的好看的设计小部件库](https://github.com/zhiyiYo/PyQt-Fluent-Widgets)
+ - [[PyQt-Fluent-Widgets] 一个pyqt、pyside的好看的设计小部件库](https://github.com/zhiyiYo/PyQt-Fluent-Widgets)
