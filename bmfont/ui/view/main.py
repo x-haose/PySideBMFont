@@ -80,7 +80,7 @@ class MainWindow(QWidget):
 
         """
         self.resize(900, 700)
-        self.setWindowIcon(QIcon(":/qfluentwidgets/images/logo.png"))
+        self.setWindowIcon(QIcon("./res/images/logo.png"))
         self.setWindowTitle("PySideBMFont")
 
         desktop = QApplication.screens()[0].availableGeometry()

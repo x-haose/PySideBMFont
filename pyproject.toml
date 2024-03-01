@@ -91,4 +91,4 @@ verify_ssl = true
 
 [tool.pdm.scripts]
 check = "pdm run pre-commit run --all-files"
-build = "nuitka --windows-disable-console --remove-output --follow-imports --onefile --enable-plugin=pyside6 --output-dir=dist --quiet --noinclude-qt-translations -o PySideBMFont ./bmfont/__main__.py"
+build = "nuitka --windows-icon-from-ico=./res/images/icon.ico --windows-disable-console --remove-output --follow-imports --onefile --enable-plugin=pyside6 --output-dir=dist --quiet --noinclude-qt-translations -o PySideBMFont ./bmfont/__main__.py"
